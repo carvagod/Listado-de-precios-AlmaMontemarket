@@ -35,8 +35,8 @@
       .map(r => ({
         categoria: (r.categoria || "").trim(),
         producto: (r.producto || "").trim(),
-        precio: (r.precio || "").toString().replace(/\./g,"").replace(/,/g,"").trim(),
         unidad: (r.unidad || "").trim(),
+        precio: (r.precio || "").toString().replace(/\./g,"").replace(/,/g,"").trim(),
         disponible: (r.disponible || "SI").trim().toUpperCase(),
       }))
       .filter(r => r.categoria && r.producto && r.disponible !== "NO");
