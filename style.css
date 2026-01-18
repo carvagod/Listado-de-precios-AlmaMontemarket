@@ -188,3 +188,223 @@ h1{
   color: var(--muted);
   border-top:1px solid var(--border);
 }
+
+/* === Look & feel "tienda saludable / verdulería" === */
+:root{
+  --leaf:#22c55e;
+  --leaf2:#16a34a;
+  --paper: rgba(17,24,39,.55);
+}
+
+/* Mejor lectura general */
+.section__title{
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+.badge{
+  color: rgba(34,197,94,.95);
+  border:1px solid rgba(34,197,94,.35);
+  background: rgba(34,197,94,.10);
+}
+
+/* === LISTA principal (más fácil que tarjetas) === */
+.grid{ /* lo reutilizamos pero ahora como lista */
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.item{
+  padding:12px 14px;
+  min-height:auto;
+}
+
+.item__top{
+  align-items:center;
+}
+
+.item__name{
+  font-weight:750;
+}
+
+.item__unit{
+  margin:0;
+  font-size:12px;
+}
+
+.item__price{
+  font-size:15px;
+}
+
+/* hace que el precio siempre quede alineado y limpio */
+.item__top > div:first-child{min-width:0}
+.item__name{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 520px}
+@media (max-width: 700px){
+  .item__name{max-width: 240px}
+}
+
+/* === PANEL LATERAL DESLIZABLE (derecha) === */
+.sidenav{
+  position: fixed;
+  top: 120px;
+  right: 0;
+  height: calc(100vh - 140px);
+  width: 320px;
+  z-index: 60;
+
+  border:1px solid var(--border);
+  border-right: none;
+  border-radius: 18px 0 0 18px;
+  background: rgba(17,24,39,.82);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+
+  transform: translateX(270px); /* se ve solo el "handle" */
+  transition: transform .22s ease;
+  overflow: hidden;
+}
+
+.sidenav:hover{
+  transform: translateX(0);
+}
+
+.sidenav__handle{
+  position:absolute;
+  left:-44px;
+  top: 16px;
+  width: 44px;
+  padding: 12px 10px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align:center;
+  border:1px solid var(--border);
+  border-right:none;
+  border-radius: 14px 0 0 14px;
+  background: rgba(17,24,39,.92);
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing:.6px;
+  user-select:none;
+}
+
+.sidenav__body{
+  height:100%;
+  padding: 14px 12px 12px 12px;
+  overflow:auto;
+}
+
+.sidenav__top{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding: 6px 6px 12px 6px;
+  border-bottom:1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.sidenav__title{
+  font-weight:800;
+  letter-spacing:.4px;
+}
+
+#navSearch{
+  padding:10px 10px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background: rgba(17,24,39,.55);
+  color: var(--text);
+  outline:none;
+  font-size:13px;
+}
+
+.navcats{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.navcat{
+  border:1px solid var(--border);
+  border-radius:14px;
+  background: rgba(17,24,39,.55);
+  overflow:hidden;
+}
+
+.navcat__head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 10px;
+  cursor:pointer;
+}
+
+.navcat__name{
+  font-weight:750;
+  font-size:13px;
+  text-transform: uppercase;
+  letter-spacing:.5px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.navcat__count{
+  font-size:12px;
+  padding:4px 8px;
+  border-radius:999px;
+  color: rgba(34,197,94,.95);
+  border:1px solid rgba(34,197,94,.35);
+  background: rgba(34,197,94,.10);
+  flex: 0 0 auto;
+}
+
+.navcat__list{
+  display:none;
+  padding: 6px 8px 10px 8px;
+  border-top:1px solid var(--border);
+  max-height: 240px;
+  overflow:auto;
+}
+
+.navcat.is-open .navcat__list{
+  display:block;
+}
+
+.navitem{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 8px;
+  border-radius:10px;
+  cursor:pointer;
+  color: var(--text);
+}
+
+.navitem:hover{
+  background: rgba(34,197,94,.10);
+}
+
+.navitem__p{
+  font-size:13px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.navitem__price{
+  font-size:12px;
+  color: var(--muted);
+  flex:0 0 auto;
+}
+
+/* Para que el contenido no quede tapado por el panel */
+.wrap{
+  padding-right: 360px;
+}
+@media (max-width: 980px){
+  .wrap{padding-right:16px;}
+  .sidenav{display:none;} /* en mobile lo escondemos */
+}
+
