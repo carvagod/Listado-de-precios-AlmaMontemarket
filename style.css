@@ -401,6 +401,55 @@ h1{
 .wrap{
   padding-right: 360px;
 }
+
+/* === Fondo blanco con imagen difuminada (frutas / verduras) === */
+body{
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* Imagen de fondo */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background-image: url("assets/eab2fa12cc3b3fc06cd517f35722e04b907cfa54_shutterstock_181811207-2400x1600.webp");
+  background-size: cover;
+  background-position: center;
+  filter: blur(12px);
+  opacity: 0.22;
+  transform: scale(1.05);
+  z-index: -2;
+}
+
+/* Capa blanca encima para legibilidad */
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.88);
+  z-index: -1;
+}
+.section,
+.item,
+.navcat{
+  background: rgba(255,255,255,0.90);
+}
+
+.section__head{
+  background: rgba(255,255,255,0.95);
+}
+
+.hero{
+  background: rgba(255,255,255,0.92);
+}
+
+#buscador,
+#navSearch,
+.chip{
+  background: #ffffff;
+}
+
 @media (max-width: 980px){
   .wrap{padding-right:16px;}
   .sidenav{display:none;} /* en mobile lo escondemos */
