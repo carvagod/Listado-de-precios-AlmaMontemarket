@@ -1,28 +1,58 @@
 :root{
-  --bg:#0b0f17;
-  --card:#111827;
-  --muted:#94a3b8;
-  --text:#e5e7eb;
-  --accent:#22c55e;
-  --border:rgba(148,163,184,.18);
-  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  /* Light theme base */
+  --bg:#ffffff;
+  --card: rgba(255,255,255,.92);
+  --muted: rgba(15,23,42,.62);
+  --text:#0f172a;
+  --accent:#16a34a;
+  --border: rgba(15,23,42,.12);
+  --shadow: 0 12px 28px rgba(2,6,23,.08);
+
+  /* “Verdulería” extras */
+  --leaf:#22c55e;
+  --leaf2:#16a34a;
+  --paper: rgba(255,255,255,.92);
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
+
+/* Fondo blanco + imagen difuminada */
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  background: #ffffff;
-  color:#0f172a;
+  background: var(--bg);
+  color: var(--text);
 }
 
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background-image: url("assets/eab2fa12cc3b3fc06cd517f35722e04b907cfa54_shutterstock_181811207-2400x1600.webp");
+  background-size: cover;
+  background-position: center;
+  filter: blur(16px);
+  opacity: 0.16;
+  transform: scale(1.06);
+  z-index: -2;
+}
+
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.90);
+  z-index: -1;
+}
+
+/* Header */
 .hero{
   position:sticky;
   top:0;
   z-index:50;
   backdrop-filter: blur(10px);
-  background: linear-gradient(to bottom, rgba(11,15,23,.92), rgba(11,15,23,.65));
+  background: rgba(255,255,255,0.92);
   border-bottom:1px solid var(--border);
 }
 .hero__inner{
@@ -30,11 +60,14 @@ body{
   margin:0 auto;
   padding:22px 16px 18px;
 }
+
 h1{
   margin:0 0 6px;
   font-size: clamp(22px, 3vw, 34px);
   letter-spacing:.2px;
+  color: var(--text);
 }
+
 .sub{
   margin:0 0 14px;
   color:var(--muted);
@@ -53,11 +86,11 @@ h1{
   padding:12px 12px;
   border-radius:14px;
   border:1px solid var(--border);
-  background: rgba(17,24,39,.55);
+  background: rgba(255,255,255,0.96);
   color: var(--text);
   outline:none;
 }
-#buscador::placeholder{color: rgba(148,163,184,.75)}
+#buscador::placeholder{color: rgba(15,23,42,.45)}
 
 .chip{
   display:inline-flex;
@@ -66,7 +99,7 @@ h1{
   padding:10px 12px;
   border:1px solid var(--border);
   border-radius:999px;
-  background: rgba(17,24,39,.55);
+  background: rgba(255,255,255,0.96);
   color: var(--muted);
   font-size:13px;
   user-select:none;
@@ -81,10 +114,12 @@ h1{
   font-size:12px;
 }
 
+/* Layout */
 .wrap{
   max-width:1100px;
   margin:0 auto;
   padding:18px 16px 28px;
+  padding-right: 360px; /* deja espacio para el panel */
 }
 
 .menu{
@@ -92,10 +127,11 @@ h1{
   gap:14px;
 }
 
+/* Secciones */
 .section{
   border:1px solid var(--border);
   border-radius:18px;
-  background: rgba(17,24,39,.6);
+  background: rgba(255,255,255,0.92);
   box-shadow: var(--shadow);
   overflow:hidden;
 }
@@ -107,66 +143,70 @@ h1{
   gap:10px;
   padding:14px 16px;
   border-bottom:1px solid var(--border);
-  background: rgba(17,24,39,.8);
+  background: rgba(255,255,255,0.96);
 }
 
 .section__title{
   margin:0;
   font-size:16px;
-  letter-spacing:.2px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--text);
 }
 
 .badge{
   padding:6px 10px;
   border-radius:999px;
   font-size:12px;
-  color: rgba(34,197,94,.95);
-  border:1px solid rgba(34,197,94,.35);
-  background: rgba(34,197,94,.08);
+  color: rgba(22,163,74,.95);
+  border:1px solid rgba(22,163,74,.28);
+  background: rgba(22,163,74,.10);
 }
 
+/* Lista principal (más legible para 500 productos) */
 .grid{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
   padding:14px 16px 16px;
-}
-@media (max-width: 920px){
-  .grid{grid-template-columns: repeat(2, minmax(0,1fr));}
-}
-@media (max-width: 560px){
-  .grid{grid-template-columns: 1fr;}
 }
 
 .item{
   border:1px solid var(--border);
   border-radius:16px;
-  background: rgba(17,24,39,.55);
-  padding:12px 12px;
+  background: rgba(255,255,255,0.96);
+  padding:12px 14px;
   display:flex;
   flex-direction:column;
   gap:8px;
-  min-height:86px;
 }
 
 .item__top{
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:space-between;
   gap:10px;
 }
+
 .item__name{
-  font-weight:650;
+  font-weight:750;
   line-height:1.2;
+  color: var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width: 520px;
 }
+
 .item__unit{
   color: var(--muted);
   font-size:12px;
-  margin-top:3px;
+  margin:0;
 }
 
 .item__price{
-  font-weight:750;
+  font-weight:800;
+  font-size:15px;
   white-space:nowrap;
   color: var(--text);
 }
@@ -175,71 +215,24 @@ h1{
   font-weight:600;
 }
 
-.muted{
-  opacity:.55;
-  filter: grayscale(.15);
+.item__top > div:first-child{min-width:0}
+
+@media (max-width: 700px){
+  .item__name{max-width: 240px}
 }
 
+/* No disponible */
+.muted{
+  opacity:.55;
+  filter: grayscale(.10);
+}
+
+/* Footer */
 .foot{
   padding:22px 16px 30px;
   text-align:center;
   color: var(--muted);
   border-top:1px solid var(--border);
-}
-
-/* === Look & feel "tienda saludable / verdulería" === */
-:root{
-  --leaf:#22c55e;
-  --leaf2:#16a34a;
-  --paper: rgba(17,24,39,.55);
-}
-
-/* Mejor lectura general */
-.section__title{
-  text-transform: uppercase;
-  letter-spacing: .8px;
-}
-
-.badge{
-  color: rgba(34,197,94,.95);
-  border:1px solid rgba(34,197,94,.35);
-  background: rgba(34,197,94,.10);
-}
-
-/* === LISTA principal (más fácil que tarjetas) === */
-.grid{ /* lo reutilizamos pero ahora como lista */
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.item{
-  padding:12px 14px;
-  min-height:auto;
-}
-
-.item__top{
-  align-items:center;
-}
-
-.item__name{
-  font-weight:750;
-}
-
-.item__unit{
-  margin:0;
-  font-size:12px;
-}
-
-.item__price{
-  font-size:15px;
-}
-
-/* hace que el precio siempre quede alineado y limpio */
-.item__top > div:first-child{min-width:0}
-.item__name{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 520px}
-@media (max-width: 700px){
-  .item__name{max-width: 240px}
 }
 
 /* === PANEL LATERAL DESLIZABLE (derecha) === */
@@ -254,11 +247,11 @@ h1{
   border:1px solid var(--border);
   border-right: none;
   border-radius: 18px 0 0 18px;
-  background: rgba(17,24,39,.82);
+  background: rgba(255,255,255,0.88);
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow);
 
-  transform: translateX(270px); /* se ve solo el "handle" */
+  transform: translateX(270px);
   transition: transform .22s ease;
   overflow: hidden;
 }
@@ -279,7 +272,7 @@ h1{
   border:1px solid var(--border);
   border-right:none;
   border-radius: 14px 0 0 14px;
-  background: rgba(17,24,39,.92);
+  background: rgba(255,255,255,0.92);
   color: var(--muted);
   font-size: 12px;
   letter-spacing:.6px;
@@ -304,17 +297,19 @@ h1{
 .sidenav__title{
   font-weight:800;
   letter-spacing:.4px;
+  color: var(--text);
 }
 
 #navSearch{
   padding:10px 10px;
   border-radius:12px;
   border:1px solid var(--border);
-  background: rgba(17,24,39,.55);
+  background: rgba(255,255,255,0.96);
   color: var(--text);
   outline:none;
   font-size:13px;
 }
+#navSearch::placeholder{color: rgba(15,23,42,.45)}
 
 .navcats{
   display:flex;
@@ -325,7 +320,7 @@ h1{
 .navcat{
   border:1px solid var(--border);
   border-radius:14px;
-  background: rgba(17,24,39,.55);
+  background: rgba(255,255,255,0.92);
   overflow:hidden;
 }
 
@@ -339,22 +334,23 @@ h1{
 }
 
 .navcat__name{
-  font-weight:750;
+  font-weight:800;
   font-size:13px;
   text-transform: uppercase;
   letter-spacing:.5px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  color: var(--text);
 }
 
 .navcat__count{
   font-size:12px;
   padding:4px 8px;
   border-radius:999px;
-  color: rgba(34,197,94,.95);
-  border:1px solid rgba(34,197,94,.35);
-  background: rgba(34,197,94,.10);
+  color: rgba(22,163,74,.95);
+  border:1px solid rgba(22,163,74,.28);
+  background: rgba(22,163,74,.10);
   flex: 0 0 auto;
 }
 
@@ -381,7 +377,7 @@ h1{
 }
 
 .navitem:hover{
-  background: rgba(34,197,94,.10);
+  background: rgba(22,163,74,.10);
 }
 
 .navitem__p{
@@ -397,61 +393,8 @@ h1{
   flex:0 0 auto;
 }
 
-/* Para que el contenido no quede tapado por el panel */
-.wrap{
-  padding-right: 360px;
-}
-
-/* === Fondo blanco con imagen difuminada (frutas / verduras) === */
-body{
-  background: #ffffff;
-  color: #0f172a;
-}
-
-/* Imagen de fondo */
-body::before{
-  content:"";
-  position: fixed;
-  inset: 0;
-  background-image: url("assets/eab2fa12cc3b3fc06cd517f35722e04b907cfa54_shutterstock_181811207-2400x1600.webp");
-  background-size: cover;
-  background-position: center;
-  filter: blur(12px);
-  opacity: 0.22;
-  transform: scale(1.05);
-  z-index: -2;
-}
-
-/* Capa blanca encima para legibilidad */
-body::after{
-  content:"";
-  position: fixed;
-  inset: 0;
-  background: rgba(255,255,255,0.88);
-  z-index: -1;
-}
-.section,
-.item,
-.navcat{
-  background: rgba(255,255,255,0.90);
-}
-
-.section__head{
-  background: rgba(255,255,255,0.95);
-}
-
-.hero{
-  background: rgba(255,255,255,0.92);
-}
-
-#buscador,
-#navSearch,
-.chip{
-  background: #ffffff;
-}
-
+/* Responsive */
 @media (max-width: 980px){
   .wrap{padding-right:16px;}
-  .sidenav{display:none;} /* en mobile lo escondemos */
+  .sidenav{display:none;}
 }
-
