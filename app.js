@@ -5,9 +5,9 @@ const elBuscador = document.getElementById("buscador");
 const elToggleNo = document.getElementById("toggleNoStock");
 const elCount = document.getElementById("count");
 const elUpdated = document.getElementById("updated");
+
 const elNavCats = document.getElementById("navCats");
 const elNavSearch = document.getElementById("navSearch");
-
 
 let RAW = [];
 
@@ -18,13 +18,11 @@ function normText(s){
 function normDisponibilidad(s){
   const v = normText(s).toUpperCase();
   if (!v) return "SI";
-  // acepta: SI/NO, TRUE/FALSE, 1/0, DISPONIBLE/NO DISPONIBLE
   if (["NO","FALSE","0","N"].includes(v)) return "NO";
   return "SI";
 }
 
 function parsePrecio(x){
-  // acepta "7.390", "7390", "7,390", "$ 7.390"
   const t = normText(x)
     .replace(/\$/g,"")
     .replace(/\s/g,"")
@@ -45,7 +43,6 @@ function groupByCategoria(rows){
     if (!m.has(r.categoria)) m.set(r.categoria, []);
     m.get(r.categoria).push(r);
   }
-  // orden alfabético de categorías
   return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0], "es"));
 }
 
@@ -58,7 +55,7 @@ function slugify(str){
 }
 
 function buildSideNav(grouped){
-  // grouped = [ [cat, items], ... ]
+  if (!elNavCats) return;
   elNavCats.innerHTML = "";
 
   for (const [cat, items] of grouped){
@@ -66,13 +63,12 @@ function buildSideNav(grouped){
 
     const box = document.createElement("div");
     box.className = "navcat";
-    box.dataset.cat = cat.toLowerCase();
+    box.dataset.cat = (cat || "").toLowerCase();
 
     const head = document.createElement("div");
     head.className = "navcat__head";
     head.addEventListener("click", () => {
       box.classList.toggle("is-open");
-      // al click en el encabezado, también hace scroll a la sección
       const sec = document.getElementById(catId);
       if (sec) sec.scrollIntoView({ behavior:"smooth", block:"start" });
     });
@@ -91,11 +87,11 @@ function buildSideNav(grouped){
     const list = document.createElement("div");
     list.className = "navcat__list";
 
-    // productos dentro (colapsado por defecto)
     for (const it of items){
       const row = document.createElement("div");
       row.className = "navitem";
-      row.dataset.prod = it.producto.toLowerCase();
+      row.dataset.prod = (it.producto || "").toLowerCase();
+
       row.addEventListener("click", (e) => {
         e.stopPropagation();
         const target = document.getElementById(it._id);
@@ -122,6 +118,8 @@ function buildSideNav(grouped){
 }
 
 function filterSideNav(){
+  if (!elNavCats || !elNavSearch) return;
+
   const q = normText(elNavSearch.value).toLowerCase();
   const cats = elNavCats.querySelectorAll(".navcat");
 
@@ -136,20 +134,17 @@ function filterSideNav(){
       if (ok) anyItem = true;
     }
 
-    // si la categoría coincide, la mostramos aunque no haya match exacto en items
     const catOk = !q || catName.includes(q) || anyItem;
     c.style.display = catOk ? "" : "none";
 
-    // abre automáticamente si hay búsqueda y hay match
     if (q && catOk) c.classList.add("is-open");
     if (!q) c.classList.remove("is-open");
   }
 }
 
-
 function render(){
-  const q = normText(elBuscador.value).toLowerCase();
-  const showNo = elToggleNo.checked;
+  const q = normText(elBuscador?.value).toLowerCase();
+  const showNo = !!elToggleNo?.checked;
 
   let rows = RAW
     .filter(r => r.categoria && r.producto)
@@ -158,24 +153,30 @@ function render(){
 
   const grouped = groupByCategoria(rows);
 
-  // contador
   const totalItems = rows.length;
   const totalCats = grouped.length;
-  elCount.textContent = `${totalCats} categorías · ${totalItems} productos`;
+  if (elCount) elCount.textContent = `${totalCats} categorías · ${totalItems} productos`;
 
   elContenedor.innerHTML = "";
 
   if (grouped.length === 0){
-    elContenedor.innerHTML = `<div class="section"><div class="section__head"><h3 class="section__title">Sin resultados</h3></div><div style="padding:16px;color:var(--muted)">Prueba con otra búsqueda o muestra NO disponibles.</div></div>`;
+    elContenedor.innerHTML =
+      `<div class="section">
+        <div class="section__head"><h3 class="section__title">Sin resultados</h3></div>
+        <div style="padding:16px;color:var(--muted)">Prueba con otra búsqueda o muestra NO disponibles.</div>
+      </div>`;
+    if (elNavCats) elNavCats.innerHTML = "";
     return;
   }
 
   for (const [cat, items] of grouped){
-    // orden dentro de cada categoría
     items.sort((a,b)=>a.producto.localeCompare(b.producto, "es"));
+
+    const catId = "cat-" + slugify(cat);
 
     const section = document.createElement("section");
     section.className = "section";
+    section.id = catId;
 
     const head = document.createElement("div");
     head.className = "section__head";
@@ -195,8 +196,13 @@ function render(){
     grid.className = "grid";
 
     for (const it of items){
+      // ID único y estable por categoría + producto (con fallback random por si hay duplicados)
+      const baseId = "p-" + slugify(cat) + "-" + slugify(it.producto);
+      it._id = baseId + "-" + Math.random().toString(16).slice(2,6);
+
       const card = document.createElement("div");
       card.className = "item" + (it.disponibilidad === "NO" ? " muted" : "");
+      card.id = it._id;
 
       const top = document.createElement("div");
       top.className = "item__top";
@@ -224,9 +230,7 @@ function render(){
 
       top.appendChild(left);
       top.appendChild(price);
-
       card.appendChild(top);
-
       grid.appendChild(card);
     }
 
@@ -234,6 +238,9 @@ function render(){
     section.appendChild(grid);
     elContenedor.appendChild(section);
   }
+
+  buildSideNav(grouped);
+  filterSideNav();
 }
 
 async function load(){
@@ -252,22 +259,26 @@ async function load(){
         unidad: normText(r.unidad),
         precio_raw: r.precio,
         precio_num: parsePrecio(r.precio),
-        disponibilidad: normDisponibilidad(r.disponibilidad ?? r.disponibilidad ?? r.disponibilidad),
+        disponibilidad: normDisponibilidad(r.disponibilidad),
       }));
 
-      // timestamp simple (del navegador)
       const now = new Date();
-      elUpdated.textContent = `Última carga: ${now.toLocaleString("es-CL")}`;
+      if (elUpdated) elUpdated.textContent = `Última carga: ${now.toLocaleString("es-CL")}`;
 
       render();
     },
     error: () => {
-      elContenedor.innerHTML = `<div class="section"><div class="section__head"><h3 class="section__title">Error</h3></div><div style="padding:16px;color:var(--muted)">No se pudo leer el CSV.</div></div>`;
+      elContenedor.innerHTML =
+        `<div class="section">
+          <div class="section__head"><h3 class="section__title">Error</h3></div>
+          <div style="padding:16px;color:var(--muted)">No se pudo leer el CSV.</div>
+        </div>`;
     }
   });
 }
 
-elBuscador.addEventListener("input", render);
-elToggleNo.addEventListener("change", render);
+elBuscador?.addEventListener("input", render);
+elToggleNo?.addEventListener("change", render);
+elNavSearch?.addEventListener("input", filterSideNav);
 
 load();
