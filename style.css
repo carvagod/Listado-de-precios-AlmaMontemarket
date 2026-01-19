@@ -115,31 +115,38 @@ body::after{
   padding: 10px 16px 10px; /* compacto */
 }
 
-/* fila superior: texto a la izquierda, logo a la derecha */
+
 .heroTop{
   display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
+  align-items:center;
+  justify-content:flex-start;
   gap: 16px;
 }
 
+/* Logo a la izquierda */
+.heroRight{
+  order: 0;
+  flex: 0 0 auto;
+  margin-right: 6px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  margin-left: 0;
+}
+
+/* Texto a la derecha */
 .heroLeft{
+  order: 1;
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.heroRight{
-  flex: 0 0 auto;
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-end;
-  margin-left:auto;
-}
+
 
 /* logo circular real, sin borde */
 .heroLogo{
-  width: 84px;
-  height: 84px;
+  width: 96px;
+  height: 96px;
   display:block;
   object-fit: contain;      /* evita cortes raros del logo */
   border-radius: 999px;
@@ -170,16 +177,17 @@ h1{
 
 /* ===== Controles ===== */
 .controls{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns: 1fr auto; /* buscador | bloque derecho */
+  gap: 10px;
   align-items:center;
-  justify-content:space-between;
   margin-top: 10px;
 }
 
+
 #buscador{
   flex:1 1 520px;
+  width: 100%;
   min-width: 280px;
   padding:12px 12px;
   border-radius:14px;
@@ -317,10 +325,16 @@ h1{
 }
 .item__name{
   font-weight:750;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width: 520px;
+  white-space: normal;              /* permite 2 líneas */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;            /* máximo 2 líneas */
+  -webkit-box-orient: vertical;
+  line-height: 1.15;
+  max-width: none;
+}
+.item__top > div:first-child{
+  min-width: 0;
 }
 .item__unit{
   font-size: 12px;
@@ -458,4 +472,5 @@ h1{
   #buscador{ flex: 1 1 100%; }
   .rightActions{ align-items:flex-start; }
   .headerSocial{ justify-content:flex-start; }
+  .controls{ grid-template-columns: 1fr; /* todo en una columna */ }
 }
