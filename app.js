@@ -9,7 +9,13 @@ const elUpdated = document.getElementById("updated");
 const elNavCats = document.getElementById("navCats");
 const elNavSearch = document.getElementById("navSearch");
 
+const elMenuBtn = document.getElementById("menuBtn");
+const elSidenav = document.getElementById("sidenav");
+const elBackdrop = document.getElementById("backdrop");
+const elCloseNav = document.getElementById("closeNav");
+
 let RAW = [];
+let selectedCats = new Set(); // categorías seleccionadas (multi)
 
 function normText(s){
   return (s ?? "").toString().trim();
@@ -54,66 +60,80 @@ function slugify(str){
     .replace(/(^-|-$)/g,"");
 }
 
-function buildSideNav(grouped){
+/* =========================
+   Drawer open/close
+========================= */
+function openNav(){
+  if (!elSidenav) return;
+  elSidenav.classList.add("is-open");
+  elSidenav.setAttribute("aria-hidden", "false");
+  if (elBackdrop){
+    elBackdrop.hidden = false;
+  }
+  if (elMenuBtn){
+    elMenuBtn.setAttribute("aria-expanded", "true");
+  }
+}
+
+function closeNav(){
+  if (!elSidenav) return;
+  elSidenav.classList.remove("is-open");
+  elSidenav.setAttribute("aria-hidden", "true");
+  if (elBackdrop){
+    elBackdrop.hidden = true;
+  }
+  if (elMenuBtn){
+    elMenuBtn.setAttribute("aria-expanded", "false");
+  }
+}
+
+/* =========================
+   Side nav (SOLO categorías)
+========================= */
+function buildSideNavFromRows(rowsForNav){
   if (!elNavCats) return;
+
+  const grouped = groupByCategoria(rowsForNav);
+
   elNavCats.innerHTML = "";
 
   for (const [cat, items] of grouped){
-    const catId = "cat-" + slugify(cat);
+    const id = "catcheck-" + slugify(cat);
 
-    const box = document.createElement("div");
-    box.className = "navcat";
-    box.dataset.cat = (cat || "").toLowerCase();
+    const row = document.createElement("label");
+    row.className = "navcat";
+    row.dataset.cat = cat.toLowerCase();
 
-    const head = document.createElement("div");
-    head.className = "navcat__head";
-    head.addEventListener("click", () => {
-      box.classList.toggle("is-open");
-      const sec = document.getElementById(catId);
-      if (sec) sec.scrollIntoView({ behavior:"smooth", block:"start" });
+    const left = document.createElement("div");
+    left.className = "navcat__left";
+
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.className = "navcat__check";
+    chk.id = id;
+    chk.checked = selectedCats.has(cat);
+
+    chk.addEventListener("change", () => {
+      if (chk.checked) selectedCats.add(cat);
+      else selectedCats.delete(cat);
+      render(); // re-render con filtro de categorías
     });
 
     const name = document.createElement("div");
     name.className = "navcat__name";
     name.textContent = cat;
 
+    left.appendChild(chk);
+    left.appendChild(name);
+
     const count = document.createElement("div");
     count.className = "navcat__count";
     count.textContent = items.length;
 
-    head.appendChild(name);
-    head.appendChild(count);
+    row.appendChild(left);
+    row.appendChild(count);
 
-    const list = document.createElement("div");
-    list.className = "navcat__list";
-
-    for (const it of items){
-      const row = document.createElement("div");
-      row.className = "navitem";
-      row.dataset.prod = (it.producto || "").toLowerCase();
-
-      row.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const target = document.getElementById(it._id);
-        if (target) target.scrollIntoView({ behavior:"smooth", block:"center" });
-      });
-
-      const p = document.createElement("div");
-      p.className = "navitem__p";
-      p.textContent = it.producto;
-
-      const pr = document.createElement("div");
-      pr.className = "navitem__price";
-      pr.textContent = Number.isFinite(it.precio_num) ? `$ ${formatoCLP(it.precio_num)}` : "";
-
-      row.appendChild(p);
-      row.appendChild(pr);
-      list.appendChild(row);
-    }
-
-    box.appendChild(head);
-    box.appendChild(list);
-    elNavCats.appendChild(box);
+    elNavCats.appendChild(row);
   }
 }
 
@@ -125,58 +145,59 @@ function filterSideNav(){
 
   for (const c of cats){
     const catName = c.dataset.cat || "";
-    const items = c.querySelectorAll(".navitem");
-
-    let anyItem = false;
-    for (const it of items){
-      const ok = !q || catName.includes(q) || (it.dataset.prod || "").includes(q);
-      it.style.display = ok ? "" : "none";
-      if (ok) anyItem = true;
-    }
-
-    const catOk = !q || catName.includes(q) || anyItem;
-    c.style.display = catOk ? "" : "none";
-
-    if (q && catOk) c.classList.add("is-open");
-    if (!q) c.classList.remove("is-open");
+    const ok = !q || catName.includes(q);
+    c.style.display = ok ? "" : "none";
   }
 }
 
+/* =========================
+   Render principal
+========================= */
 function render(){
   const q = normText(elBuscador?.value).toLowerCase();
   const showNo = !!elToggleNo?.checked;
 
+  // 1) filtros base (disponibilidad + búsqueda)
   let rows = RAW
     .filter(r => r.categoria && r.producto)
     .filter(r => showNo ? true : r.disponibilidad !== "NO")
     .filter(r => !q ? true : (r.producto.toLowerCase().includes(q)));
 
-  const grouped = groupByCategoria(rows);
+  // 2) filtro por categorías seleccionadas (multi)
+  if (selectedCats.size > 0){
+    rows = rows.filter(r => selectedCats.has(r.categoria));
+  }
 
+  // 3) agrupación y métricas
+  const grouped = groupByCategoria(rows);
   const totalItems = rows.length;
   const totalCats = grouped.length;
+
   if (elCount) elCount.textContent = `${totalCats} categorías · ${totalItems} productos`;
 
+  // 4) pintar contenedor
   elContenedor.innerHTML = "";
 
   if (grouped.length === 0){
     elContenedor.innerHTML =
       `<div class="section">
         <div class="section__head"><h3 class="section__title">Sin resultados</h3></div>
-        <div style="padding:16px;color:var(--muted)">Prueba con otra búsqueda o muestra NO disponibles.</div>
+        <div style="padding:16px;color:var(--muted)">Prueba con otra búsqueda, cambia categorías o muestra NO disponibles.</div>
       </div>`;
-    if (elNavCats) elNavCats.innerHTML = "";
+    // Mantén el drawer usable: lista categorías basada en filas sin filtro de categoría (para que puedas “salir” del filtro)
+    const rowsForNav = RAW
+      .filter(r => r.categoria && r.producto)
+      .filter(r => showNo ? true : r.disponibilidad !== "NO");
+    buildSideNavFromRows(rowsForNav);
+    filterSideNav();
     return;
   }
 
   for (const [cat, items] of grouped){
     items.sort((a,b)=>a.producto.localeCompare(b.producto, "es"));
 
-    const catId = "cat-" + slugify(cat);
-
     const section = document.createElement("section");
     section.className = "section";
-    section.id = catId;
 
     const head = document.createElement("div");
     head.className = "section__head";
@@ -196,13 +217,8 @@ function render(){
     grid.className = "grid";
 
     for (const it of items){
-      // ID único y estable por categoría + producto (con fallback random por si hay duplicados)
-      const baseId = "p-" + slugify(cat) + "-" + slugify(it.producto);
-      it._id = baseId + "-" + Math.random().toString(16).slice(2,6);
-
       const card = document.createElement("div");
       card.className = "item" + (it.disponibilidad === "NO" ? " muted" : "");
-      card.id = it._id;
 
       const top = document.createElement("div");
       top.className = "item__top";
@@ -239,10 +255,18 @@ function render(){
     elContenedor.appendChild(section);
   }
 
-  buildSideNav(grouped);
+  // Side nav: categorías basadas en lo que se puede mostrar sin filtro de categorías (pero respetando toggle NO)
+  const rowsForNav = RAW
+    .filter(r => r.categoria && r.producto)
+    .filter(r => showNo ? true : r.disponibilidad !== "NO");
+
+  buildSideNavFromRows(rowsForNav);
   filterSideNav();
 }
 
+/* =========================
+   Load
+========================= */
 async function load(){
   const res = await fetch(CSV_URL, { cache: "no-store" });
   const csvText = await res.text();
@@ -277,8 +301,19 @@ async function load(){
   });
 }
 
+/* =========================
+   Events
+========================= */
 elBuscador?.addEventListener("input", render);
 elToggleNo?.addEventListener("change", render);
 elNavSearch?.addEventListener("input", filterSideNav);
+
+elMenuBtn?.addEventListener("click", openNav);
+elCloseNav?.addEventListener("click", closeNav);
+elBackdrop?.addEventListener("click", closeNav);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeNav();
+});
 
 load();
