@@ -117,16 +117,17 @@ body::after{
   z-index: 2;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 14px 16px 14px;
+  padding: 10px 16px 8px; /* 👈 menos padding vertical */
 }
 
-.heroTop{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 18px;
-  min-height: 160px; /* 👈 CLAVE */
+.hero__inner{
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 16px 8px; /* 👈 menos padding vertical */
 }
+
 
 
 .heroLeft{
@@ -145,11 +146,10 @@ body::after{
 
 /* ===== Logo sin encasillar ===== */
 .heroLogo{
-  width: 84px;
-  height: 84px;
+  width: 72px;            /* tamaño realista */
+  height: 72px;
   object-fit: cover;
-  border: 0;
-  border-radius: 999px;   /* circular */
+  border-radius: 999px;
   background: transparent;
   padding: 0;
   box-shadow: none;
@@ -190,8 +190,7 @@ h1{
   display:flex;
   flex-direction:column;
   align-items:flex-end;
-  gap:10px;
-  flex: 0 0 auto;
+  gap:6px;                 /* 👈 menos aire */
 }
 
 .headerSocial{
@@ -204,20 +203,21 @@ h1{
 .hsLink{
   display:inline-flex;
   align-items:center;
-  gap:8px;
+  gap:6px;
   text-decoration:none;
-  color: rgba(15,23,42,.78);
-  font-size: 12px;
-  padding: 8px 10px;
-  border: 1px solid rgba(15,23,42,.10);
+  color: rgba(15,23,42,.75);
+  font-size: 11px;          /* 👈 más chico */
+  padding: 6px 8px;
   border-radius: 999px;
   background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(15,23,42,.08);
 }
 
 .hsIcon{
   width: 14px;
   height: 14px;
-  opacity:.75;
+  opacity: .7;
+  flex-shrink: 0;
 }
 
 
