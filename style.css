@@ -1,5 +1,4 @@
 :root{
-  /* Light theme base */
   --bg:#ffffff;
   --card: rgba(255,255,255,.92);
   --muted: rgba(15,23,42,.62);
@@ -8,14 +7,13 @@
   --border: rgba(15,23,42,.12);
   --shadow: 0 12px 28px rgba(2,6,23,.08);
 
-  /* Fondo */
+  /* Imagen de fondo */
   --bgimg: url("https://0201.nccdn.net/1_2/000/000/0fd/b85/eab2fa12cc3b3fc06cd517f35722e04b907cfa54_shutterstock_181811207-2400x1600.jpg");
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
 
-/* Fondo blanco + imagen difuminada */
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -23,6 +21,7 @@ body{
   color: var(--text);
 }
 
+/* Imagen difuminada visible */
 body::before{
   content:"";
   position: fixed;
@@ -30,17 +29,18 @@ body::before{
   background-image: var(--bgimg);
   background-size: cover;
   background-position: center;
-  filter: blur(18px);
-  opacity: 0.20;
-  transform: scale(1.06);
+  filter: blur(16px);
+  opacity: 0.38;          /* SUBE visibilidad */
+  transform: scale(1.08); /* evita bordes por blur */
   z-index: -2;
 }
 
+/* Capa blanca encima, pero menos intensa */
 body::after{
   content:"";
   position: fixed;
   inset: 0;
-  background: rgba(255,255,255,0.90);
+  background: rgba(255,255,255,0.78); /* BAJA opacidad */
   z-index: -1;
 }
 
@@ -56,9 +56,13 @@ body::after{
   border: 1px solid var(--border);
   background: rgba(255,255,255,0.92);
   box-shadow: var(--shadow);
-  display: grid;
-  place-items: center;
   cursor: pointer;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 3px; /* líneas más juntas */
 }
 
 .menuBtn span{
@@ -67,9 +71,9 @@ body::after{
   height: 2px;
   background: rgba(15,23,42,.78);
   border-radius: 999px;
-  margin: 2px 0;
 }
 
+/* overlay al abrir el drawer */
 .backdrop{
   position: fixed;
   inset: 0;
@@ -96,23 +100,26 @@ body::after{
 .brandbar{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
   margin-bottom: 10px;
 }
 
+/* LOGO más grande y visible */
 .brandbar__logo{
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
   object-fit: cover;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(15,23,42,.14);
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 10px 22px rgba(2,6,23,.10);
 }
 
 .brandbar__name{
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: .2px;
   color: var(--text);
+  font-size: 18px;
 }
 
 h1{
@@ -273,7 +280,7 @@ h1{
   margin-left: 4px;
 }
 
-/* Panel lateral (drawer) SOLO categorías */
+/* Drawer SOLO categorías */
 .sidenav{
   position: fixed;
   top: 0;
