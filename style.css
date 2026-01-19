@@ -125,7 +125,9 @@ body::after{
   align-items:center;
   justify-content:space-between;
   gap: 18px;
+  min-height: 160px; /* 👈 CLAVE */
 }
+
 
 .heroLeft{
   flex: 1 1 auto;
@@ -141,15 +143,12 @@ body::after{
 
 /* ===== Logo sin encasillar ===== */
 .heroLogo{
-  width: 320px;          /* tamaño del logo */
-  height: 96px;          /* alto alineado al texto */
+  width: 420px;
+  height: 130px;
   object-fit: contain;
-  border: 0;
-  border-radius: 0;
   background: transparent;
-  padding: 0;
-  box-shadow: none;
 }
+
 
 /* Tipografías */
 .brandbar__name{
