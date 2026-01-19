@@ -170,18 +170,17 @@ h1{
 }
 
 /* ===== Controles =====
-   Queremos:
+   SIEMPRE:
    Fila 1: [buscador] [toggle]
-   Fila 2: [RRSS .........] [RRSS]  (justo debajo del toggle, alineado a la derecha)
+   Fila 2: [RRSS] (debajo, alineado a la derecha)
 */
 .controls{
   display:grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0,1fr) max-content;
   grid-template-areas:
     "search toggle"
     ".      social";
-  gap: unset;
-  colum-gap: 6px;
+  column-gap: 6px;
   row-gap: 8px;
   align-items: center;
   margin-top: 10px;
@@ -190,7 +189,7 @@ h1{
 #buscador{
   grid-area: search;
   width: 100%;
-  min-width: 0;              /* clave para que pueda achicarse */
+  min-width: 0;
   height: 44px;
   padding: 0 12px;
   border-radius:14px;
@@ -200,9 +199,9 @@ h1{
 }
 #buscador::placeholder{color: rgba(15,23,42,.45)}
 
-/* bloque derecho: NO lo usamos como columna, lo convertimos en contenedor “de posición” */
+/* wrapper solo para markup, posicionamos por grid-area */
 .rightActions{
-  display: contents;          /* permite ubicar hijos por grid-area sin wrapper raro */
+  display: contents;
 }
 
 /* toggle */
@@ -211,7 +210,7 @@ h1{
   justify-self: end;
 }
 
-/* RRSS debajo del toggle */
+/* RRSS debajo del toggle, a la derecha */
 .headerSocial{
   grid-area: social;
   justify-self: end;
@@ -329,13 +328,13 @@ h1{
 
 .item__top{
   display:flex;
-  align-items:flex-start;      /* mejora cuando el nombre ocupa 2 líneas */
+  align-items:flex-start;
   justify-content:space-between;
   gap:10px;
 }
+.item__top > div:first-child{ min-width: 0; }
 
-/* Nombre en 2 líneas (evita que el precio se salga) */
-.item__top > div:first-child{ min-width: 0; }  /* clave para truncado/clamp */
+/* Nombre en 2 líneas */
 .item__name{
   font-weight:750;
   white-space: normal;
@@ -482,48 +481,41 @@ h1{
   .heroTop{ align-items:flex-start; }
   .heroLogo{ width: 68px; height: 68px; padding: 7px; }
 
-  /* Buscador + toggle en 1 línea, RRSS abajo */
+  /* buscador + toggle juntos en una línea, RRSS abajo a la derecha */
   .controls{
     grid-template-columns: minmax(0,1fr) max-content;
     grid-template-areas:
-      "search actions"
-      "social social";
-    column-gap: 2px;   /* <-- casi juntos */
+      "search toggle"
+      ".      social";
+    column-gap: 2px; /* <-- casi pegados */
     row-gap: 8px;
     align-items:center;
   }
 
   #buscador{
+    min-width: 0;
     height: 42px;
     padding: 0 10px;
-    width: 100%;
-    min-width: 0;
   }
-
-  /* Clave: el toggle NO puede ser gigante */
-  .rightActions{ justify-content:flex-end; }
 
   .chip{
     height: 42px;
-    padding: 0 8px;        /* <-- reduce ancho */
-    font-size: 11px;       /* <-- reduce ancho */
+    padding: 0 8px;
+    font-size: 11px;
     gap: 6px;
-    max-width: 44vw;       /* <-- evita que se coma el buscador */
+    max-width: 46vw;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  /* Reduce el tamaño visual del checkbox dentro del chip */
   .chip input{
     width: 16px;
     height: 16px;
   }
 
-  /* RRSS abajo */
   .headerSocial{
-    justify-self: center;
-    justify-content: center;
+    justify-self: end;
     gap: 8px;
   }
   .hsLink{
@@ -532,4 +524,3 @@ h1{
   }
   .hsIcon{ width: 13px; height: 13px; }
 }
-
