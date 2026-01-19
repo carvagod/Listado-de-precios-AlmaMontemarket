@@ -6,10 +6,7 @@
   --border: rgba(15,23,42,.12);
   --shadow: 0 12px 28px rgba(2,6,23,.08);
 
-  /* Fondo de página (SIN blur) */
   --pageimg: url("https://0201.nccdn.net/1_2/000/000/0fd/b85/eab2fa12cc3b3fc06cd517f35722e04b907cfa54_shutterstock_181811207-2400x1600.jpg");
-
-  /* Imagen del header (desde tu repo) */
   --heroimg: url("header.jpg");
 }
 
@@ -23,7 +20,7 @@ body{
   background: var(--bg);
 }
 
-/* ===== Fondo de página sin difuminar ===== */
+/* ===== Fondo de página ===== */
 body::before{
   content:"";
   position: fixed;
@@ -31,20 +28,18 @@ body::before{
   background-image: var(--pageimg);
   background-size: cover;
   background-position: center;
-  opacity: 0.22;           /* controla cuánto se ve (sube a 0.30 si quieres más) */
+  opacity: 0.22;
   z-index: -2;
 }
-
-/* Capa blanca para legibilidad (más suave) */
 body::after{
   content:"";
   position: fixed;
   inset: 0;
-  background: rgba(255,255,255,0.78); /* baja a 0.70 si quieres más imagen */
+  background: rgba(255,255,255,0.78);
   z-index: -1;
 }
 
-/* overlay drawer */
+/* ===== Overlay drawer ===== */
 .backdrop{
   position: fixed;
   inset: 0;
@@ -52,7 +47,7 @@ body::after{
   background: rgba(2,6,23,.28);
 }
 
-/* Botón hamburguesa */
+/* ===== Botón hamburguesa ===== */
 .menuBtn{
   position: fixed;
   top: 14px;
@@ -89,7 +84,7 @@ body::after{
   overflow: hidden;
 }
 
-/* Header con blur leve (para que se aprecie) */
+/* imagen fondo del header */
 .hero::before{
   content:"";
   position:absolute;
@@ -97,18 +92,18 @@ body::after{
   background-image: var(--heroimg);
   background-size: cover;
   background-position: center;
-  filter: blur(6px);       /* ANTES 14px -> menos blur */
-  opacity: 0.80;           /* sube presencia */
+  filter: blur(6px);
+  opacity: 0.85;
   transform: scale(1.03);
   z-index: 0;
 }
 
-/* Capa blanca encima del header (más suave) */
+/* velo blanco para legibilidad */
 .hero::after{
   content:"";
   position:absolute;
   inset:0;
-  background: rgba(255,255,255,0.55); /* baja para ver más imagen */
+  background: rgba(255,255,255,0.55);
   z-index: 1;
 }
 
@@ -117,18 +112,16 @@ body::after{
   z-index: 2;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 10px 16px 8px; /* 👈 menos padding vertical */
+  padding: 10px 16px 10px; /* compacto */
 }
 
-.hero__inner{
-  position: relative;
-  z-index: 2;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 10px 16px 8px; /* 👈 menos padding vertical */
+/* fila superior: texto a la izquierda, logo a la derecha */
+.heroTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 16px;
 }
-
-
 
 .heroLeft{
   flex: 1 1 auto;
@@ -138,25 +131,23 @@ body::after{
 .heroRight{
   flex: 0 0 auto;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:flex-end;
-  margin-left: auto;      /* empuja a la derecha */
+  margin-left:auto;
 }
 
-
-/* ===== Logo sin encasillar ===== */
+/* logo circular real, sin borde */
 .heroLogo{
-  width: 72px;            /* tamaño realista */
-  height: 72px;
-  object-fit: cover;
+  width: 84px;
+  height: 84px;
+  display:block;
+  object-fit: contain;      /* evita cortes raros del logo */
   border-radius: 999px;
-  background: transparent;
-  padding: 0;
+  background: rgba(255,255,255,0.85); /* hace visible el círculo si el PNG es transparente */
+  padding: 8px;             /* “marco” circular sin borde */
   box-shadow: none;
+  border: 0;
 }
-
-}
-
 
 /* Tipografías */
 .brandbar__name{
@@ -177,25 +168,39 @@ h1{
   font-size:14px;
 }
 
-/* Controles */
+/* ===== Controles ===== */
 .controls{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
   align-items:center;
-  margin-top: 12px;
+  justify-content:space-between;
+  margin-top: 10px;
 }
 
+#buscador{
+  flex:1 1 520px;
+  min-width: 280px;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,0.96);
+  outline:none;
+}
+#buscador::placeholder{color: rgba(15,23,42,.45)}
+
+/* bloque derecho (RRSS + toggle) */
 .rightActions{
   display:flex;
   flex-direction:column;
   align-items:flex-end;
-  gap:6px;                 /* 👈 menos aire */
+  gap:8px;
+  flex: 0 0 auto;
 }
 
 .headerSocial{
   display:flex;
-  gap:12px;
+  gap:10px;
   flex-wrap:wrap;
   justify-content:flex-end;
 }
@@ -206,31 +211,22 @@ h1{
   gap:6px;
   text-decoration:none;
   color: rgba(15,23,42,.75);
-  font-size: 11px;          /* 👈 más chico */
-  padding: 6px 8px;
+  font-size: 11px;
+  padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.90);
   border: 1px solid rgba(15,23,42,.08);
+  line-height: 1;
 }
 
 .hsIcon{
   width: 14px;
   height: 14px;
-  opacity: .7;
+  opacity: .75;
   flex-shrink: 0;
 }
 
-
-#buscador{
-  flex:1 1 280px;
-  padding:12px 12px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background: rgba(255,255,255,0.96);
-  outline:none;
-}
-#buscador::placeholder{color: rgba(15,23,42,.45)}
-
+/* chip */
 .chip{
   display:inline-flex;
   align-items:center;
@@ -242,13 +238,11 @@ h1{
   color: var(--muted);
   font-size:13px;
   user-select:none;
+  line-height:1;
 }
+.chipToggle{ align-self:flex-end; }
 
-.chipToggle{
-  align-self:flex-end;
-}
-
-
+/* meta */
 .meta{
   margin-top:10px;
   display:flex;
@@ -258,7 +252,7 @@ h1{
   font-size:12px;
 }
 
-/* Layout */
+/* ===== Layout ===== */
 .wrap{
   max-width:1100px;
   margin:0 auto;
@@ -266,7 +260,7 @@ h1{
 }
 .menu{display:grid; gap:14px;}
 
-/* Secciones */
+/* ===== Secciones ===== */
 .section{
   border:1px solid var(--border);
   border-radius:18px;
@@ -298,7 +292,7 @@ h1{
   background: rgba(22,163,74,.10);
 }
 
-/* Lista */
+/* ===== Lista ===== */
 .grid{
   display:flex;
   flex-direction:column;
@@ -343,7 +337,7 @@ h1{
   margin-left: 4px;
 }
 
-/* Drawer */
+/* ===== Drawer ===== */
 .sidenav{
   position: fixed;
   top: 0;
@@ -432,7 +426,7 @@ h1{
   accent-color: var(--accent);
 }
 
-/* Footer */
+/* ===== Footer ===== */
 .foot{
   text-align:center;
   padding: 18px 16px 28px;
@@ -442,21 +436,26 @@ h1{
 .footerSocial{
   display:flex;
   justify-content:center;
-  gap:18px;
-  margin-bottom:12px;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
 }
-
 .footerSocial img{
-  width:28px;
-  height:28px;
-  opacity:.75;
+  width:18px;
+  height:18px;
+  opacity:.65;
   transition: opacity .2s ease, transform .2s ease;
 }
-
 .footerSocial a:hover img{
   opacity:1;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
-
-
+/* ===== Responsive ===== */
+@media (max-width: 720px){
+  .heroTop{ align-items:flex-start; }
+  .heroLogo{ width: 68px; height: 68px; padding: 7px; }
+  #buscador{ flex: 1 1 100%; }
+  .rightActions{ align-items:flex-start; }
+  .headerSocial{ justify-content:flex-start; }
+}
